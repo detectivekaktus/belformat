@@ -1,0 +1,12 @@
+.vscode/
+.idea/
+.clangd
+compile_commands.json
+
+*.exe
+*.dll
+*.com
+
+*.bin
+*.so
+*.a
