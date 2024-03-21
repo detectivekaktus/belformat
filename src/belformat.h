@@ -20,14 +20,21 @@ typedef struct {
     (str)->capacity = INIT_STRING_CAPACITY; \
   } while(0) 
 
-#define str_insert(str, value) \
+#define str_insert(str, val) \
   do { \
-    while((str)->size + (strlen(value) + 1) >= (str)->capacity) { \
+    while((str)->size + (strlen(val) + 1) >= (str)->capacity) { \
       (str)->capacity *= 2; \
       (str)->chars = realloc((str)->chars, (str)->capacity * sizeof(char)); \
     } \
-    strcpy((str)->chars + (str)->size, value); \
-    (str)->size += strlen(value) + 1; \
+    if ((str)->size == 0) { \
+      strcpy((str)->chars + (str)->size, val); \
+      (str)->size += strlen(val) + 1; \
+    } else { \
+      (str)->chars[(str)->size - 1] = 0; \
+      (str)->size--; \
+      strcpy((str)->chars + (str)->size, val); \
+      (str)->size += strlen(val) + 1; \
+    } \
   } while(0)
 
 #define str_free(str) \
