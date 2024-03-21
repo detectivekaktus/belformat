@@ -46,11 +46,24 @@ typedef struct {
     free(str); \
   } while(0)
 
+/* Appends `\033[am` sequence to the print buffer. The `a` argument
+ * must be a valid ASCII character from 48 to 57 (characters from 0
+ * to 9). If `a` is invalid, nothing gets appended. */
 void append_one_sequence(str *buffer, unsigned char a);
+
+/* Appends `<token + got` sequence to the print buffer. The `token`
+ * parameter represents the current token being processed while `got`
+ * parameter is the character gotten from during parsing. */
 void append_syntax_error(str *buffer, unsigned char token, unsigned char got);
+
+/* Outputs formatted string `format` to the stream `stream` with
+ * `args` arguments. Extends the features of the `vfprintf` from
+ * the standard C library adding styling tags to output bold, italic,
+ * dim, underlined, strikethrought, blinking, hidden, and riversed
+ * strings. */
+int vfbelprintf(FILE *stream, const char *format, va_list args);
 int belprintf(const char *format, ...);
 int fbelprintf(FILE *stream, const char *format, ...);
 int vbelprintf(const char *format, va_list args);
-int vfbelprintf(FILE *stream, const char *format, va_list args);
 
 #endif // !BELFORMAT_IMPLEMENTATION_H

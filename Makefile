@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -fPIC
+CFLAGS = -Wall -Wextra -Werror -ggdb -fPIC
 BUILD_DIR = build
 TARGETS = belformat.o
 
