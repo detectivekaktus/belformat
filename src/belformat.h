@@ -49,5 +49,8 @@ typedef struct {
 void append_one_sequence(str *buffer, unsigned char a);
 void append_syntax_error(str *buffer, unsigned char token, unsigned char got);
 int belprintf(const char *format, ...);
+int fbelprintf(FILE *stream, const char *format, ...);
+int vbelprintf(const char *format, va_list args);
+int vfbelprintf(FILE *stream, const char *format, va_list args);
 
 #endif // !BELFORMAT_IMPLEMENTATION_H

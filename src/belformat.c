@@ -17,6 +17,25 @@ void append_syntax_error(str *buffer, unsigned char token, unsigned char got) {
 
 int belprintf(const char *format, ...) {
   va_list args;
+  va_start(args, format);
+  int result = vfbelprintf(stdout, format, args);
+  va_end(args);
+  return result;
+}
+
+int fbelprintf(FILE *stream, const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  int result = vfbelprintf(stream, format, args);
+  va_end(args);
+  return result;
+}
+
+int vbelprintf(const char *format, va_list args) {
+  return vfbelprintf(stdout, format, args);
+}
+
+int vfbelprintf(FILE *stream, const char *format, va_list args) {
   str *buffer = malloc(sizeof(str));
   str_start(buffer);
 
@@ -98,7 +117,7 @@ int belprintf(const char *format, ...) {
     }
   }
 
-  int result = vprintf(buffer->chars, args);
+  int result = vfprintf(stream, buffer->chars, args);
   str_free(buffer);
   return result;
 }
