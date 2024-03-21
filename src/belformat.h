@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define INIT_STRING_CAPACITY 128
 typedef struct {
@@ -20,20 +21,22 @@ typedef struct {
     (str)->capacity = INIT_STRING_CAPACITY; \
   } while(0) 
 
-#define str_insert(str, val) \
+#define str_append(str, val) \
   do { \
-    while((str)->size + (strlen(val) + 1) >= (str)->capacity) { \
-      (str)->capacity *= 2; \
+    if ((str)->size == (str)->capacity) { \
+      (str)->capacity += 2; \
       (str)->chars = realloc((str)->chars, (str)->capacity * sizeof(char)); \
     } \
     if ((str)->size == 0) { \
-      strcpy((str)->chars + (str)->size, val); \
-      (str)->size += strlen(val) + 1; \
+      (str)->size++; \
+      (str)->chars[(str)->size - 1] = val; \
+      (str)->size++; \
+      (str)->chars[(str)->size - 1] = '\0'; \
     } else { \
       (str)->chars[(str)->size - 1] = 0; \
-      (str)->size--; \
-      strcpy((str)->chars + (str)->size, val); \
-      (str)->size += strlen(val) + 1; \
+      (str)->chars[(str)->size - 1] = val; \
+      (str)->size++; \
+      (str)->chars[(str)->size - 1] = '\0'; \
     } \
   } while(0)
 
@@ -42,5 +45,9 @@ typedef struct {
     free((str)->chars); \
     free(str); \
   } while(0)
+
+void append_one_sequence(str *buffer, unsigned char a);
+void append_syntax_error(str *buffer, unsigned char token, unsigned char got);
+int belprintf(const char *format, ...);
 
 #endif // !BELFORMAT_IMPLEMENTATION_H
