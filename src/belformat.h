@@ -56,7 +56,10 @@ void append_long_sequence(str *buffer, unsigned char a, unsigned char b);
  * `args` arguments. Extends the features of the `vfprintf` from
  * the standard C library adding styling tags to output bold, italic,
  * dim, underlined, strikethrought, blinking, hidden, and riversed
- * strings. */
+ * strings.
+ *
+ * Colores the characters with terminal-predefined colors: black, red, 
+ * green, blue, yellow, cyan, magenta, and white. */
 int vfbelprintf(FILE *stream, const char *format, va_list args);
 int belprintf(const char *format, ...);
 int fbelprintf(FILE *stream, const char *format, ...);
