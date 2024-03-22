@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <stdbool.h>
 
 #define INIT_STRING_CAPACITY 128
 typedef struct {
@@ -24,7 +23,7 @@ typedef struct {
 #define str_append(str, val) \
   do { \
     if ((str)->size == (str)->capacity) { \
-      (str)->capacity += 2; \
+      (str)->capacity += 1; \
       (str)->chars = realloc((str)->chars, (str)->capacity * sizeof(char)); \
     } \
     if ((str)->size == 0) { \
@@ -33,7 +32,6 @@ typedef struct {
       (str)->size++; \
       (str)->chars[(str)->size - 1] = '\0'; \
     } else { \
-      (str)->chars[(str)->size - 1] = 0; \
       (str)->chars[(str)->size - 1] = val; \
       (str)->size++; \
       (str)->chars[(str)->size - 1] = '\0'; \
