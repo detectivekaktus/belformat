@@ -47,7 +47,8 @@ typedef struct {
 /* Appends `\033[am` sequence to the print buffer. The `a` argument
  * must be a valid ASCII character from 48 to 57 (characters from 0
  * to 9). If `a` is invalid, nothing gets appended. */
-void append_one_sequence(str *buffer, unsigned char a);
+void append_short_sequence(str *buffer, unsigned char a);
+void append_long_sequence(str *buffer, unsigned char a, unsigned char b);
 
 /* Appends `<token + got` sequence to the print buffer. The `token`
  * parameter represents the current token being processed while `got`

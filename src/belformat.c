@@ -1,6 +1,6 @@
 #include "belformat.h"
 
-void append_one_sequence(str *buffer, unsigned char a) {
+void append_short_sequence(str *buffer, unsigned char a) {
   if (a >= 48 && a <= 57) {
     str_append(buffer, '\033');
     str_append(buffer, '[');
@@ -9,10 +9,14 @@ void append_one_sequence(str *buffer, unsigned char a) {
   }
 }
 
-void append_syntax_error(str *buffer, unsigned char token, unsigned char got) {
-  str_append(buffer, '<');
-  str_append(buffer, token);
-  str_append(buffer, got);
+void append_long_sequence(str *buffer, unsigned char a, unsigned char b) {
+  if ((a >= 48 && a <= 57) && (b >= 48 && b <= 57)) {
+    str_append(buffer, '\033');
+    str_append(buffer, '[');
+    str_append(buffer, a);
+    str_append(buffer, b);
+    str_append(buffer, 'm');
+  }
 }
 
 int belprintf(const char *format, ...) {
@@ -45,65 +49,74 @@ int vfbelprintf(FILE *stream, const char *format, va_list args) {
       switch (*format) {
         case 'b': {
           format++;
-          if (*format == '>') append_one_sequence(buffer, 49);
-          else append_syntax_error(buffer, 'b', *format);
-          format++;
+          if (*format == '>') {
+            append_short_sequence(buffer, 49);
+            format++;
+          }
           break;
         }
         case 'i': {
           format++;
-          if (*format == '>') append_one_sequence(buffer, 51);
-          else append_syntax_error(buffer, 'i', *format);
-          format++;
+          if (*format == '>') {
+            append_short_sequence(buffer, 51);
+            format++;
+          }
           break;
         }
         case 'u': {
           format++;
-          if (*format == '>') append_one_sequence(buffer, 52);
-          else append_syntax_error(buffer, 'u', *format);
-          format++;
+          if (*format == '>') {
+            append_short_sequence(buffer, 52);
+            format++;
+          }
           break;
         }
         case 's': {
           format++;
-          if (*format == '>') append_one_sequence(buffer, 57);
-          else append_syntax_error(buffer, 's', *format);
-          format++;
+          if (*format == '>') {
+            append_short_sequence(buffer, 57);
+            format++;
+          }
           break;
         }
         case 'd': {
           format++;
-          if (*format == '>') append_one_sequence(buffer, 50);
-          else append_syntax_error(buffer, 'd', *format);
-          format++;
+          if (*format == '>') {
+            append_short_sequence(buffer, 50);
+            format++;
+          }
           break;
         }
         case 'l': {
           format++;
-          if (*format == '>') append_one_sequence(buffer, 53);
-          else append_syntax_error(buffer, 'l', *format);
-          format++;
+          if (*format == '>') {
+            append_short_sequence(buffer, 53);
+            format++;
+          }
           break;
         }
         case 'p': {
           format++;
-          if (*format == '>') append_one_sequence(buffer, 56);
-          else append_syntax_error(buffer, 'p', *format);
-          format++;
+          if (*format == '>') {
+            append_short_sequence(buffer, 56);
+            format++;
+          }
           break;
         }
         case 'r': {
           format++;
-          if (*format == '>') append_one_sequence(buffer, 55);
-          else append_syntax_error(buffer, 'r', *format);
-          format++;
+          if (*format == '>') {
+            append_short_sequence(buffer, 55);
+            format++;
+          }
           break;
         }
         case '/': {
           format++;
-          if (*format == '>') append_one_sequence(buffer, 48);
-          else append_syntax_error(buffer, '/', *format);
-          format++;
+          if (*format == '>') {
+            append_short_sequence(buffer, 48);
+            format++;
+          }
           break;
         }
         default: {
