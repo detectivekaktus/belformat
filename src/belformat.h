@@ -20,6 +20,8 @@ typedef struct {
     (str)->capacity = INIT_STRING_CAPACITY; \
   } while(0) 
 
+// TODO #2: define str_long_append that appends a string
+// to the current buffer
 #define str_append(str, val) \
   do { \
     if ((str)->size == (str)->capacity) { \
@@ -49,11 +51,6 @@ typedef struct {
  * to 9). If `a` is invalid, nothing gets appended. */
 void append_short_sequence(str *buffer, unsigned char a);
 void append_long_sequence(str *buffer, unsigned char a, unsigned char b);
-
-/* Appends `<token + got` sequence to the print buffer. The `token`
- * parameter represents the current token being processed while `got`
- * parameter is the character gotten from during parsing. */
-void append_syntax_error(str *buffer, unsigned char token, unsigned char got);
 
 /* Outputs formatted string `format` to the stream `stream` with
  * `args` arguments. Extends the features of the `vfprintf` from

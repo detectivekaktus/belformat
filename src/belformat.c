@@ -40,6 +40,8 @@ int vbelprintf(const char *format, va_list args) {
   return vfbelprintf(stdout, format, args);
 }
 
+// TODO #1: generalize the appendance of the sequences and extract
+// a unique method to append sequence. E.g. `append_format`, `append_foreground`.
 int vfbelprintf(FILE *stream, const char *format, va_list args) {
   str *buffer = malloc(sizeof(str));
   str_start(buffer);
