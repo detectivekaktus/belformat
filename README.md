@@ -39,6 +39,7 @@ Here are available identifiers for the tag responsible for the stylizing:
 
 ### Coloring
 You can also color the characters with the following predefined colors. Notice that these tags use standard colors of your terminal.
+In order to apply only color for your text, you need to use the `<c>` tag with the same syntax as the normal stylizing tags, e.g. `<c;red>`.
 * black.
 * red. 
 * green.
