@@ -19,6 +19,45 @@ void append_long_sequence(str *buffer, unsigned char a, unsigned char b) {
   }
 }
 
+int append_sequence(const char *format, str *buffer, unsigned char token) {
+  int steps = 0;
+
+  format++;
+  steps++;
+  if (*format == ';') {
+    append_short_sequence(buffer, token);
+    format++;
+    steps++;
+    steps += append_foreground(format, buffer) + 1;
+  } else if (*format == '>') {
+    append_short_sequence(buffer, token);
+    steps++;
+  }
+
+  return steps;
+}
+
+int append_foreground(const char *format, str *buffer) {
+  char color[9];
+  int i = 0;
+  while (*format != '>' && i < 8) {
+    color[i] = *format;
+    i++;
+    format++;
+  }
+  color[i] = '\0';
+
+  if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
+  if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
+  if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
+  if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
+  if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
+  if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
+  if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
+  if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
+  return i;
+}
+
 int belprintf(const char *format, ...) {
   va_list args;
   va_start(args, format);
@@ -39,8 +78,6 @@ int vbelprintf(const char *format, va_list args) {
   return vfbelprintf(stdout, format, args);
 }
 
-// TODO #1: generalize the appendance of the sequences and extract
-// a unique method to append sequence. E.g. `append_format`, `append_foreground`.
 // TODO #3: resolve problem with invalid tags. Either throw an error with `assert`
 // or not print anything to the stream.
 int vfbelprintf(FILE *stream, const char *format, va_list args) {
@@ -52,275 +89,40 @@ int vfbelprintf(FILE *stream, const char *format, va_list args) {
       format++;
       switch (*format) {
         case 'b': {
-          format++;
-          if (*format == ';') {
-            append_short_sequence(buffer, '1');
-            format++;
-
-            char color[9];
-            int i = 0;
-            while (*format != '>' && i < 8) {
-              color[i] = *format;
-              i++;
-              format++;
-            }
-            color[i] = '\0';
-
-            if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-            if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-            if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-            if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-            if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-            if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-            if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-            if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-
-            format++;
-          } else if (*format == '>') {
-            append_short_sequence(buffer, '1');
-            format++;
-          }
-          break;
-        }
-        case 'i': {
-          format++;
-          if (*format == ';') {
-            append_short_sequence(buffer, '3');
-            format++;
-
-            char color[9];
-            int i = 0;
-            while (*format != '>' && i < 8) {
-              color[i] = *format;
-              i++;
-              format++;
-            }
-            color[i] = '\0';
-
-            if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-            if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-            if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-            if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-            if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-            if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-            if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-            if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-
-            format++;
-          } else if (*format == '>') {
-            append_short_sequence(buffer, '3');
-            format++;
-          }
-          break;
-        }
-        case 'u': {
-          format++;
-          if (*format == ';') {
-            append_short_sequence(buffer, '4');
-            format++;
-
-            char color[9];
-            int i = 0;
-            while (*format != '>' && i < 8) {
-              color[i] = *format;
-              i++;
-              format++;
-            }
-            color[i] = '\0';
-
-            if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-            if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-            if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-            if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-            if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-            if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-            if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-            if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-
-            format++;
-          } else if (*format == '>') {
-            append_short_sequence(buffer, '4');
-            format++;
-          }
-          break;
-        }
-        case 's': {
-          format++;
-          if (*format == ';') {
-            append_short_sequence(buffer, '9');
-            format++;
-
-            char color[9];
-            int i = 0;
-            while (*format != '>' && i < 8) {
-              color[i] = *format;
-              i++;
-              format++;
-            }
-            color[i] = '\0';
-
-            if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-            if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-            if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-            if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-            if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-            if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-            if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-            if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-
-            format++;
-          } else if (*format == '>') {
-            append_short_sequence(buffer, '9');
-            format++;
-          }
+          format += append_sequence(format, buffer, '1');
           break;
         }
         case 'd': {
-          format++;
-          if (*format == ';') {
-            append_short_sequence(buffer, '2');
-            format++;
-
-            char color[9];
-            int i = 0;
-            while (*format != '>' && i < 8) {
-              color[i] = *format;
-              i++;
-              format++;
-            }
-            color[i] = '\0';
-
-            if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-            if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-            if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-            if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-            if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-            if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-            if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-            if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-
-            format++;
-          } else if (*format == '>') {
-            append_short_sequence(buffer, '2');
-            format++;
-          }
+          format += append_sequence(format, buffer, '2');
+          break;
+        }
+        case 'i': {
+          format += append_sequence(format, buffer, '3');
+          break;
+        }
+        case 'u': {
+          format += append_sequence(format, buffer, '4');
           break;
         }
         case 'l': {
-          format++;
-          if (*format == ';') {
-            append_short_sequence(buffer, '5');
-            format++;
-
-            char color[9];
-            int i = 0;
-            while (*format != '>' && i < 8) {
-              color[i] = *format;
-              i++;
-              format++;
-            }
-            color[i] = '\0';
-
-            if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-            if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-            if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-            if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-            if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-            if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-            if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-            if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-
-            format++;
-          } else if (*format == '>') {
-            append_short_sequence(buffer, '5');
-            format++;
-          }
-          break;
-        }
-        case 'p': {
-          format++;
-          if (*format == ';') {
-            append_short_sequence(buffer, '8');
-            format++;
-
-            char color[9];
-            int i = 0;
-            while (*format != '>' && i < 8) {
-              color[i] = *format;
-              i++;
-              format++;
-            }
-            color[i] = '\0';
-
-            if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-            if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-            if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-            if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-            if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-            if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-            if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-            if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-
-            format++;
-          } else if (*format == '>') {
-            append_short_sequence(buffer, '8');
-            format++;
-          }
+          format += append_sequence(format, buffer, '5');
           break;
         }
         case 'r': {
-          format++;
-          if (*format == ';') {
-            append_short_sequence(buffer, '7');
-            format++;
-
-            char color[9];
-            int i = 0;
-            while (*format != '>' && i < 8) {
-              color[i] = *format;
-              i++;
-              format++;
-            }
-            color[i] = '\0';
-
-            if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-            if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-            if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-            if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-            if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-            if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-            if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-            if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-
-            format++;
-          } else if (*format == '>') {
-            append_short_sequence(buffer, '7');
-            format++;
-          }
+          format += append_sequence(format, buffer, '7');
+          break;
+        }
+        case 'p': {
+          format += append_sequence(format, buffer, '8');
+          break;
+        }
+        case 's': {
+          format += append_sequence(format, buffer, '9'); 
           break;
         }
         case 'c': {
           format += 2;
-
-          char color[9];
-          int i = 0;
-          while (*format != '>' && i < 8) {
-            color[i] = *format;
-            i++;
-            format++;
-          }
-          color[i] = '\0';
-
-          if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-          if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-          if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-          if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-          if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-          if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-          if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-          if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-
-          format++;
+          format += append_foreground(format, buffer) + 1;
           break;
         }
         case '/': {

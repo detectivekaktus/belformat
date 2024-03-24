@@ -46,11 +46,11 @@ typedef struct {
     free(str); \
   } while(0)
 
-/* Appends `\033[am` sequence to the print buffer. The `a` argument
- * must be a valid ASCII character from 48 to 57 (characters from 0
- * to 9). If `a` is invalid, nothing gets appended. */
 void append_short_sequence(str *buffer, unsigned char a);
 void append_long_sequence(str *buffer, unsigned char a, unsigned char b);
+
+int append_sequence(const char *format, str *buffer, unsigned char token);
+int append_foreground(const char *format, str *buffer);
 
 /* Outputs formatted string `format` to the stream `stream` with
  * `args` arguments. Extends the features of the `vfprintf` from
