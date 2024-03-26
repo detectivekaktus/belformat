@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <assert.h>
 
 #define INIT_STRING_CAPACITY 128
 typedef struct {

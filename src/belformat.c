@@ -1,4 +1,5 @@
 #include "belformat.h"
+#include <stdio.h>
 
 void append_short_sequence(str *buffer, unsigned char a) {
   if (a >= 48 && a <= 57) {
@@ -24,13 +25,18 @@ int append_sequence(const char *format, str *buffer, unsigned char token) {
 
   format++;
   steps++;
-  if (*format == ';') {
+  assert(*format == '>' || *format == ';');
+  if (*format == '>') {
+    append_short_sequence(buffer, token);
+    steps++;
+  } else if (*format == ';') {
     append_short_sequence(buffer, token);
     format++;
     steps++;
-    steps += append_foreground(format, buffer) + 1;
-  } else if (*format == '>') {
-    append_short_sequence(buffer, token);
+    int fg_steps = append_foreground(format, buffer);
+    format += fg_steps;
+    steps += fg_steps;
+    assert(*format == '>');
     steps++;
   }
 
@@ -78,8 +84,6 @@ int vbelprintf(const char *format, va_list args) {
   return vfbelprintf(stdout, format, args);
 }
 
-// TODO #3: resolve problem with invalid tags. Either throw an error with `assert`
-// or not print anything to the stream.
 int vfbelprintf(FILE *stream, const char *format, va_list args) {
   str *buffer = malloc(sizeof(str));
   str_start(buffer);
@@ -121,16 +125,17 @@ int vfbelprintf(FILE *stream, const char *format, va_list args) {
           break;
         }
         case 'c': {
-          format += 2;
+          format++;
+          assert(*format == ';');
+          format++;
           format += append_foreground(format, buffer) + 1;
           break;
         }
         case '/': {
           format++;
-          if (*format == '>') {
-            append_short_sequence(buffer, '0');
-            format++;
-          }
+          assert(*format == '>');
+          append_short_sequence(buffer, '0');
+          format++;
           break;
         }
         default: {
