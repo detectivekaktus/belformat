@@ -1,5 +1,4 @@
 #include "belformat.h"
-#include <stdio.h>
 
 void append_short_sequence(str *buffer, unsigned char a) {
   if (a >= 48 && a <= 57) {
@@ -36,8 +35,18 @@ int append_sequence(const char *format, str *buffer, unsigned char token) {
     int fg_steps = append_foreground(format, buffer);
     format += fg_steps;
     steps += fg_steps;
-    assert(*format == '>');
-    steps++;
+    assert(*format == '>' || *format == ';');
+    if (*format == '>')
+      steps++;
+    else {
+      format++;
+      steps++;
+      int bg_steps = append_background(format, buffer);
+      format += bg_steps;
+      steps += bg_steps;
+      assert(*format == '>');
+      steps++;
+    }
   }
 
   return steps;
@@ -46,7 +55,7 @@ int append_sequence(const char *format, str *buffer, unsigned char token) {
 int append_foreground(const char *format, str *buffer) {
   char color[9];
   int i = 0;
-  while (*format != '>' && i < 8) {
+  while ((*format != '>' && i < 8) && (*format != ';' && i < 8)) {
     color[i] = *format;
     i++;
     format++;
@@ -61,6 +70,27 @@ int append_foreground(const char *format, str *buffer) {
   if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
   if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
   if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
+  return i;
+}
+
+int append_background(const char *format, str *buffer) {
+  char color[9];
+  int i = 0;
+  while (*format != '>' && i < 8) {
+    color[i] = *format;
+    i++;
+    format++;
+  }
+  color[i] = '\0';
+
+  if (strcmp(color, "black") == 0) append_long_sequence(buffer, '4', '0');
+  if (strcmp(color, "red") == 0) append_long_sequence(buffer, '4', '1');
+  if (strcmp(color, "green") == 0) append_long_sequence(buffer, '4', '2');
+  if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '4', '3');
+  if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '4', '4');
+  if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '4', '5');
+  if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '4', '6');
+  if (strcmp(color, "white") == 0) append_long_sequence(buffer, '4', '7');
   return i;
 }
 

@@ -52,6 +52,7 @@ void append_long_sequence(str *buffer, unsigned char a, unsigned char b);
 
 int append_sequence(const char *format, str *buffer, unsigned char token);
 int append_foreground(const char *format, str *buffer);
+int append_background(const char *format, str *buffer);
 
 /* Outputs formatted string `format` to the stream `stream` with
  * `args` arguments. Extends the features of the `vfprintf` from
