@@ -32,7 +32,7 @@ int append_sequence(const char *format, str *buffer, unsigned char token) {
     append_short_sequence(buffer, token);
     format++;
     steps++;
-    int fg_steps = append_foreground(format, buffer);
+    int fg_steps = append_color(format, buffer, '3');
     format += fg_steps;
     steps += fg_steps;
     assert(*format == '>' || *format == ';');
@@ -41,7 +41,7 @@ int append_sequence(const char *format, str *buffer, unsigned char token) {
     else {
       format++;
       steps++;
-      int bg_steps = append_background(format, buffer);
+      int bg_steps = append_color(format, buffer, '4');
       format += bg_steps;
       steps += bg_steps;
       assert(*format == '>');
@@ -52,7 +52,7 @@ int append_sequence(const char *format, str *buffer, unsigned char token) {
   return steps;
 }
 
-int append_foreground(const char *format, str *buffer) {
+int append_color(const char *format, str *buffer, unsigned char token) {
   char color[9];
   int i = 0;
   while ((*format != '>' && i < 8) && (*format != ';' && i < 8)) {
@@ -62,35 +62,14 @@ int append_foreground(const char *format, str *buffer) {
   }
   color[i] = '\0';
 
-  if (strcmp(color, "black") == 0) append_long_sequence(buffer, '3', '0');
-  if (strcmp(color, "red") == 0) append_long_sequence(buffer, '3', '1');
-  if (strcmp(color, "green") == 0) append_long_sequence(buffer, '3', '2');
-  if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '3', '3');
-  if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '3', '4');
-  if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '3', '5');
-  if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '3', '6');
-  if (strcmp(color, "white") == 0) append_long_sequence(buffer, '3', '7');
-  return i;
-}
-
-int append_background(const char *format, str *buffer) {
-  char color[9];
-  int i = 0;
-  while (*format != '>' && i < 8) {
-    color[i] = *format;
-    i++;
-    format++;
-  }
-  color[i] = '\0';
-
-  if (strcmp(color, "black") == 0) append_long_sequence(buffer, '4', '0');
-  if (strcmp(color, "red") == 0) append_long_sequence(buffer, '4', '1');
-  if (strcmp(color, "green") == 0) append_long_sequence(buffer, '4', '2');
-  if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, '4', '3');
-  if (strcmp(color, "blue") == 0) append_long_sequence(buffer, '4', '4');
-  if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, '4', '5');
-  if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, '4', '6');
-  if (strcmp(color, "white") == 0) append_long_sequence(buffer, '4', '7');
+  if (strcmp(color, "black") == 0) append_long_sequence(buffer, token, '0');
+  if (strcmp(color, "red") == 0) append_long_sequence(buffer, token, '1');
+  if (strcmp(color, "green") == 0) append_long_sequence(buffer, token, '2');
+  if (strcmp(color, "yellow") == 0) append_long_sequence(buffer, token, '3');
+  if (strcmp(color, "blue") == 0) append_long_sequence(buffer, token, '4');
+  if (strcmp(color, "magenta") == 0) append_long_sequence(buffer, token, '5');
+  if (strcmp(color, "cyan") == 0) append_long_sequence(buffer, token, '6');
+  if (strcmp(color, "white") == 0) append_long_sequence(buffer, token, '7');
   return i;
 }
 
@@ -158,7 +137,7 @@ int vfbelprintf(FILE *stream, const char *format, va_list args) {
           format++;
           assert(*format == ';');
           format++;
-          format += append_foreground(format, buffer) + 1;
+          format += append_color(format, buffer, '3') + 1;
           break;
         }
         case '/': {
