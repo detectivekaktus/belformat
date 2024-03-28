@@ -1,4 +1,5 @@
 #include "belformat.h"
+#include <time.h>
 
 void append_short_sequence(str *buffer, unsigned char a) {
   assert(a >= '0' && a <= '9');
@@ -89,7 +90,7 @@ int append_color(const char *format, str *buffer, unsigned char token) {
 
 // TODO #1: Extract `extract_primary_color` function to get
 // red, green, and blue values.
-// TODO #3: Extraact `STR_APPEND_RGB` macro to set RGB values.
+// TODO #3: Extract `STR_APPEND_RGB` macro to set RGB values.
 int append_hex_color(const char *format, str *buffer, unsigned char mode) {
   int steps = 0;
   char hex_r[3];
@@ -262,4 +263,38 @@ int vfbelprintf(FILE *stream, const char *format, va_list args) {
   int result = vfprintf(stream, buffer->chars, args);
   STR_FREE(buffer);
   return result;
+}
+
+void belinfo(const char *msg, ...) {
+  va_list args;
+  va_start(args, msg);
+  belprintf("[INFO] ");
+  vbelprintf(msg, args);
+  va_end(args);
+}
+
+void belwarn(const char *msg, ...) {
+  va_list args;
+  va_start(args, msg);
+  fbelprintf(stderr, "<b;yellow>[WARNING]</> ");
+  vfbelprintf(stderr, msg, args);
+  va_end(args);
+}
+
+void belerror(const char *msg, ...) {
+  va_list args;
+  va_start(args, msg);
+  fbelprintf(stderr, "<b;red>[ERROR]</> ");
+  vfbelprintf(stderr, msg, args);
+  va_end(args);
+}
+
+void bellog(const char *msg, ...) {
+  va_list args;
+  va_start(args, msg);
+  time_t now = time(NULL);
+  struct tm *local_time = localtime(&now);
+  belprintf("[LOG %02d:%02d:%02d] ", local_time->tm_hour, local_time->tm_min, local_time->tm_sec);
+  vbelprintf(msg, args);
+  va_end(args);
 }

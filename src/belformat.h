@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <time.h>
 
 #define INIT_STRING_CAPACITY 128
 typedef struct {
@@ -75,6 +76,9 @@ int belprintf(const char *format, ...);
 int fbelprintf(FILE *stream, const char *format, ...);
 int vbelprintf(const char *format, va_list args);
 
-char *strhex_to_strint(const char *hex);
+void belinfo(const char *msg, ...);
+void belwarn(const char *msg, ...);
+void belerror(const char *msg, ...);
+void bellog(const char *msg, ...);
 
 #endif // !BELFORMAT_IMPLEMENTATION_H
