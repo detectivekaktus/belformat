@@ -6,6 +6,8 @@
 #include <stdarg.h>
 #include <string.h>
 #include <assert.h>
+#include <stdbool.h>
+#include <ctype.h>
 
 #define INIT_STRING_CAPACITY 128
 typedef struct {
@@ -14,7 +16,7 @@ typedef struct {
   size_t capacity;
 } str;
 
-#define str_start(str) \
+#define STR_START(str) \
   do { \
     (str)->chars = calloc(INIT_STRING_CAPACITY, sizeof(char)); \
     (str)->size = 0; \
@@ -23,7 +25,7 @@ typedef struct {
 
 // TODO #2: define str_long_append that appends a string
 // to the current buffer
-#define str_append(str, val) \
+#define STR_APPEND(str, val) \
   do { \
     if ((str)->size == (str)->capacity) { \
       (str)->capacity += 1; \
@@ -41,7 +43,7 @@ typedef struct {
     } \
   } while(0)
 
-#define str_free(str) \
+#define STR_FREE(str) \
   do { \
     free((str)->chars); \
     free(str); \
@@ -52,6 +54,13 @@ void append_long_sequence(str *buffer, unsigned char a, unsigned char b);
 
 int append_sequence(const char *format, str *buffer, unsigned char token);
 int append_color(const char *format, str *buffer, unsigned char token);
+int append_hex_color(const char *format, str *buffer, unsigned char mode);
+
+/* Converts a 1 byte long string hexadecimal value to a 1 byte long
+ * string decimal value. Be careful! You need to free the pointer once
+ * you're done using the string gotten from this function! */
+char *strhex1b_to_strint1b(const char *hex);
+bool is_hex(const char c);
 
 /* Outputs formatted string `format` to the stream `stream` with
  * `args` arguments. Extends the features of the `vfprintf` from
@@ -65,5 +74,7 @@ int vfbelprintf(FILE *stream, const char *format, va_list args);
 int belprintf(const char *format, ...);
 int fbelprintf(FILE *stream, const char *format, ...);
 int vbelprintf(const char *format, va_list args);
+
+char *strhex_to_strint(const char *hex);
 
 #endif // !BELFORMAT_IMPLEMENTATION_H
