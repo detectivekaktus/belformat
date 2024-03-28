@@ -11,3 +11,9 @@ psx_belformat: $(TARGETS)
 
 belformat.o:
 	$(CC) $(CFLAGS) -c src/belformat.c -o belformat.o
+
+examples: belformat.o examples.o
+	$(CC) $(CFLAGS) -o examples belformat.o examples.o
+
+examples.o:
+	$(CC) $(CFLAGS) -c examples/examples.c -o examples.o
