@@ -130,11 +130,11 @@ int append_hex_color(const char *format, str *buffer, unsigned char mode) {
   STR_APPEND(buffer, ';');
   STR_APPEND(buffer, '2');
   STR_APPEND(buffer, ';');
-  for (int i = 0; i < strlen(int_r); i++) STR_APPEND(buffer, int_r[i]);
+  for (size_t i = 0; i < strlen(int_r); i++) STR_APPEND(buffer, int_r[i]);
   STR_APPEND(buffer, ';');
-  for (int i = 0; i < strlen(int_g); i++) STR_APPEND(buffer, int_g[i]);
+  for (size_t i = 0; i < strlen(int_g); i++) STR_APPEND(buffer, int_g[i]);
   STR_APPEND(buffer, ';');
-  for (int i = 0; i < strlen(int_b); i++) STR_APPEND(buffer, int_b[i]);
+  for (size_t i = 0; i < strlen(int_b); i++) STR_APPEND(buffer, int_b[i]);
   STR_APPEND(buffer, 'm');
 
   free(int_r);
