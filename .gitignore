@@ -10,5 +10,6 @@ compile_commands.json
 *.bin
 *.so
 *.a
+*.o
 
 main.c
