@@ -1,5 +1,4 @@
 #include "belformat.h"
-#include <time.h>
 
 void append_short_sequence(str *buffer, unsigned char a) {
   assert(a >= '0' && a <= '9');
