@@ -69,7 +69,7 @@ int append_sequence(const char *format, str *buffer, unsigned char token) {
 int append_color(const char *format, str *buffer, unsigned char token) {
   char color[9];
   int i = 0;
-  while ((*format != '>' && i < 8) && (*format != ';' && i < 8)) {
+  while (*format != '\0' && ((*format != '>' && i < 8) && (*format != ';' && i < 8))) {
     color[i] = *format;
     i++;
     format++;
