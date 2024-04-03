@@ -20,7 +20,12 @@ typedef struct {
 #define STR_START(str) \
   do { \
     (str)->chars = calloc(INIT_STRING_CAPACITY, sizeof(char)); \
-    (str)->size = 0; \
+    if ((str)->chars == NULL) { \
+      fprintf(stderr, "buy more RAM lol"); \
+      exit(1); \
+    } \
+    (str)->chars[0] = '\0'; \
+    (str)->size = 1; \
     (str)->capacity = INIT_STRING_CAPACITY; \
   } while(0) 
 
@@ -28,20 +33,17 @@ typedef struct {
 // to the current buffer
 #define STR_APPEND(str, val) \
   do { \
-    if ((str)->size == (str)->capacity) { \
-      (str)->capacity += 1; \
+    if ((str)->size >= (str)->capacity) { \
+      (str)->capacity *= 2; \
       (str)->chars = realloc((str)->chars, (str)->capacity * sizeof(char)); \
+      if ((str)->chars == NULL) { \
+        fprintf(stderr, "buy more RAM lol"); \
+        exit(1); \
+      } \
     } \
-    if ((str)->size == 0) { \
-      (str)->size++; \
-      (str)->chars[(str)->size - 1] = val; \
-      (str)->size++; \
-      (str)->chars[(str)->size - 1] = '\0'; \
-    } else { \
-      (str)->chars[(str)->size - 1] = val; \
-      (str)->size++; \
-      (str)->chars[(str)->size - 1] = '\0'; \
-    } \
+    (str)->chars[(str)->size - 1] = val; \
+    (str)->size++; \
+    (str)->chars[(str)->size - 1] = '\0'; \
   } while(0)
 
 #define STR_FREE(str) \

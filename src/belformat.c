@@ -147,6 +147,10 @@ int append_hex_color(const char *format, str *buffer, unsigned char mode) {
 char *strhex1b_to_strint1b(const char *hex) {
   int hex_int = strtol(hex, NULL, 16);
   char *str_int = calloc(4, sizeof(char));
+  if (str_int == NULL) {
+    fprintf(stderr, "buy more RAM lol");
+    exit(1);
+  }
   snprintf(str_int, 4, "%d", hex_int);
   return str_int;
 }
@@ -177,6 +181,10 @@ int vbelprintf(const char *format, va_list args) {
 
 int vfbelprintf(FILE *stream, const char *format, va_list args) {
   str *buffer = malloc(sizeof(str));
+  if (buffer == NULL) {
+    fprintf(stderr, "buy more RAM lol");
+    exit(1);
+  }
   STR_START(buffer);
 
   while (*format != '\0') {
