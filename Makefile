@@ -1,6 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -pedantic -ggdb
 BUILD_DIR = build
+SOURCES = src/belformat.c
 TARGETS = belformat.o
 
 win_belformat: $(TARGETS)
@@ -12,11 +13,13 @@ psx_belformat: $(TARGETS)
 static_belformat: $(TARGETS)
 	ar rcs libbelformat.a belformat.o
 
-examples: belformat.o exam.o
+$(TARGETS):
+	$(CC) $(CFLAGS) -fPIC -c $(SOURCES) -o $(TARGETS)
+
+examples: $(TARGETS)
+	$(CC) $(CFLAGS) -c examples/examples.c -o exam.o
 	$(CC) $(CFLAGS) -o exam belformat.o exam.o
 
-exam.o:
-	$(CC) $(CFLAGS) -c examples/examples.c -o exam.o
-
-belformat.o:
-	$(CC) $(CFLAGS) -fPIC -c src/belformat.c -o belformat.o
+clean:
+	rm *.o
+	rm *.so
